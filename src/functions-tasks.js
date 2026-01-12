@@ -118,8 +118,18 @@ function getPolynom(...args) {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  const cache = new Map();
+
+  return function memo(arg) {
+    if (cache.has(arg)) {
+      return cache.get(arg);
+    }
+
+    const result = func(arg);
+    cache.set(arg, result);
+    return result;
+  };
 }
 
 /**
@@ -137,8 +147,19 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return function fn() {
+    let count;
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        return func();
+      } catch {
+        count += 1;
+      }
+    }
+
+    return count;
+  };
 }
 
 /**
@@ -182,8 +203,10 @@ function logger(/* func, logFunc */) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(/* fn, ...args */) {
-  throw new Error('Not implemented');
+function partialUsingArguments(fn, ...args) {
+  return (...partialArg) => {
+    return fn(...args, ...partialArg);
+  };
 }
 
 /**
